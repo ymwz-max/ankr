@@ -1,9 +1,9 @@
 kind: pipeline
 type: docker
-name: build
+name: ankr
 
 clone:
-  disable: true
+  disable: false
 
 steps:
   - name: build-image # 步骤名称
