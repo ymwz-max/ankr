@@ -2,12 +2,8 @@ kind: pipeline
 type: docker
 name: build
 
-
-trigger:
-  branch:
-    - main
-  event:
-    - push
+clone:
+  disable: false # 启用代码拉取
 
 steps:
   - name: build-image # 步骤名称
@@ -22,7 +18,7 @@ steps:
       tags:
         - ${DRONE_COMMIT}
         - latest
-        -
+
   - name: ssh-deploy
     image: appleboy/drone-ssh
     settings:
@@ -40,3 +36,9 @@ steps:
         - docker pull yangmei1219/ankr:${DRONE_COMMIT}
         - docker stop ankr || true && docker rm ankr || true
         - docker run ankr -d --restart=always
+
+trigger:
+  branch:
+    - main
+  event:
+    - push
