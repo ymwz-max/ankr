@@ -3,7 +3,7 @@ RUN mkdir /go/src/app
 WORKDIR /go/src/app
 COPY ./ ./
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o ser main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o ser ankr/main.go
 
 FROM alpine:latest
 WORKDIR /root/

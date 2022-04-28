@@ -19,6 +19,24 @@ steps:
         - ${DRONE_COMMIT}
         - latest
 
+#  - name: ssh-deploy
+#    image: appleboy/drone-ssh
+#    settings:
+#      host: 192.168.1.112
+#      username: yangmei
+#      password:
+#        from_secret: server-password
+#      repo_username:
+#        from_secret: docker_username
+#      repo_password:
+#        from_secret: docker-password
+#      port: 22
+#      script:
+#        - docker login --username=${docker_username} --password=${docker-password} yangmei1219
+#        - docker pull yangmei1219/ankr:${DRONE_COMMIT}
+#        - docker stop ankr || true && docker rm ankr || true
+#        - docker run ankr -d --restart=always
+
 trigger:
   branch:
     - main
