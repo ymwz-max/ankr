@@ -2,21 +2,41 @@ kind: pipeline
 type: docker
 name: build
 
-steps:
-  - name: build
-    image: golang:alpine
-    pull: if-not-exists # always never
-    environment:
-      KEY: VALUE
-    commands:
-      - echo $KEY
-      - pwd
-      - ls
-      - CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
-      - ./app
 
 trigger:
   branch:
     - main
   event:
     - push
+
+steps:
+  - name: build-image # 步骤名称
+    image: plugins/docker # 使用镜像
+    settings: # 当前设置
+      username: # 账号名称
+        from_secret: docker_username
+      password: # 账号密码
+        from_secret: docker_password
+      dockerfile: Dockerfile # Dockerfile地址， 注意是相对地址
+      repo: yangmei1219/ankr # 镜像名称
+      tags:
+        - ${DRONE_COMMIT}
+        - latest
+        -
+  - name: ssh-deploy
+    image: appleboy/drone-ssh
+    settings:
+      host: 192.168.1.112
+      username: yangmei
+      password:
+        from_secret: server-password
+      repo_username:
+        from_secret: docker_username
+      repo_password:
+        from_secret: docker-password
+      port: 22
+      script:
+        - docker login --username=${docker_username} --password=${docker-password} yangmei1219
+        - docker pull yangmei1219/ankr:${DRONE_COMMIT}
+        - docker stop ankr || true && docker rm ankr || true
+        - docker run ankr -d --restart=always
