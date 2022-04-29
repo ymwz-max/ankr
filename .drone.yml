@@ -6,6 +6,17 @@ clone:
   disable: false
 
 steps:
+  # 使用缓存
+  - name: restore-cache
+    image: drillster/drone-volume-cache
+    settings:
+      restore: true
+      mount:
+        - ./node_modules
+    volumes:
+      - name: node_cache
+        path: /cache
+
   - name: ssh-deploy
     image: appleboy/drone-ssh
     settings:
@@ -22,7 +33,7 @@ steps:
         - docker login --username=${repo_username} --password=${repo_password} yangmei1219
         - docker pull yangmei1219/ankr:latest
         - docker stop ankr || true && docker rm ankr || true
-        - docker run ankr -d --restart=always
+        - docker run -d --publish=8088:8088 -name=ankr --restart=always yangmei1219/ankr:latest
 
 trigger:
   branch:
