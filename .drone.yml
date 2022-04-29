@@ -6,18 +6,6 @@ clone:
   disable: false
 
 steps:
-  - name: build-image # 步骤名称
-    image: plugins/docker # 使用镜像
-    settings: # 当前设置
-      username: # 账号名称
-        from_secret: docker_username
-      password: # 账号密码
-        from_secret: docker_password
-      dockerfile: Dockerfile # Dockerfile地址， 注意是相对地址
-      repo: yangmei1219/ankr # 镜像名称
-      tags:
-        - ${DRONE_COMMIT}
-
   - name: ssh-deploy
     image: appleboy/drone-ssh
     settings:
@@ -32,7 +20,7 @@ steps:
       port: 22
       script:
         - docker login --username=${repo_username} --password=${repo_password} yangmei1219
-        - docker pull yangmei1219/ankr:${DRONE_COMMIT}
+        - docker pull yangmei1219/ankr:latest
         - docker stop ankr || true && docker rm ankr || true
         - docker run ankr -d --restart=always
 
