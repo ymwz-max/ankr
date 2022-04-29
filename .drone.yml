@@ -12,7 +12,7 @@ steps:
     settings:
       restore: true
       mount:
-        - ./node_modules
+        - ./etc
     volumes:
       - name: node_cache
         path: /cache
