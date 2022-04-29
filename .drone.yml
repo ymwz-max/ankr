@@ -16,6 +16,9 @@ steps:
     volumes:
       - name: node_cache
         path: /cache
+    commands:
+      - ls
+      - pwd
 
   - name: ssh-deploy
     image: appleboy/drone-ssh
